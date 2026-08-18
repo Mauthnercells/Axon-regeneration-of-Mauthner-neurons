@@ -13,7 +13,7 @@
 module load STAR
 
 
-for file in 'Injury_12hpi_1' 'Injury_12hpi_2' 'Injury_12hpi_3' 'Injury_12hpi_4' 'Injury_24hpi_1' 'Injury_24hpi_2' 'Injury_24hpi_3' 'Injury_24hpi_4' 'Injury_24hpi_5' 'Injury_2hpi_1' 'Injury_2hpi_2' 'Injury_2hpi_3' 'Injury_2hpi_4' 'Injury_2hpi_5' 'Injury_48hpi_1' 'Injury_48hpi_2' 'Injury_48hpi_3' 'Injury_48hpi_4' 'Injury_48hpi_5' 'Injury_6hpi_1' 'Injury_6hpi_2' 'Injury_6hpi_3' 'Injury_6hpi_4' 'Injury_6hpi_5' 'Injury_6hpi_6' 'Injury_72hpi_1' 'Injury_72hpi_2' 'Injury_72hpi_3' 'Injury_72hpi_4' 'Injury_96hpi_1' 'Injury_96hpi_2' 'Injury_96hpi_3' 'Normal_12hpi_1' 'Normal_12hpi_2' 'Normal_12hpi_3' 'Normal_12hpi_4' 'Normal_24hpi_1' 'Normal_24hpi_2' 'Normal_24hpi_3' 'Normal_24hpi_4' 'Normal_24hpi_5' 'Normal_2hpi_1' 'Normal_2hpi_2' 'Normal_2hpi_3' 'Normal_2hpi_4' 'Normal_2hpi_5' 'Normal_48hpi_1' 'Normal_48hpi_2' 'Normal_48hpi_3' 'Normal_48hpi_4' 'Normal_48hpi_5' 'Normal_6hpi_1' 'Normal_6hpi_2' 'Normal_6hpi_3' 'Normal_6hpi_4' 'Normal_6hpi_5' 'Normal_6hpi_6' 'Normal_72hpi_1' 'Normal_72hpi_2' 'Normal_72hpi_3' 'Normal_72hpi_4' 'Normal_96hpi_1' 'Normal_96hpi_2' 'Normal_96hpi_3'
+for file in "sample names"
 
 do
 echo $file
