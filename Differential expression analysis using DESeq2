@@ -1,0 +1,78 @@
+library(Seurat)
+library(DESeq2)
+library(dplyr)
+library(ggplot2)
+library(cowplot)
+library(ggrepel)
+
+# ============ 1. Read data ============
+setwd('H:/scRNA-seq/Hip-seq/')
+seurat_obj <- readRDS('seurat2/matrix.rds')
+
+# ============ 2. Subset cells ============
+seurat_sub <- seurat_obj[, seurat_obj$Methods == 'Hip-seq' & 
+                           seurat_obj$group %in% c('N48', 'NRe48', 'Re48')]
+
+# Set factor levels with N48 as reference
+seurat_sub$group <- factor(seurat_sub$group, levels = c('N48', 'NRe48', 'Re48'))
+table(seurat_sub$group)
+
+# ============ 3. Extract raw count matrix ============
+counts_matrix <- GetAssayData(seurat_sub, assay = "RNA", slot = "counts")
+counts_matrix <- as.matrix(round(counts_matrix))
+
+col_data <- seurat_sub@meta.data
+col_data$group <- droplevels(col_data$group)
+
+# ============ 4. Define DE function with apeglm shrinkage ============
+run_deseq2_apeglm <- function(counts, meta, group1, group2) {
+  # group1: treatment (e.g., "Re48"), group2: control (e.g., "N48")
+  
+  dds <- DESeqDataSetFromMatrix(countData = counts, colData = meta, design = ~ group)
+  
+  # Filter low-expression genes: expressed in at least one cell
+  keep <- rowSums(counts[, meta$group %in% c(group1, group2)] > 0) >= 
+    0 * sum(meta$group %in% c(group1, group2))
+  dds <- dds[keep, ]
+  
+  dds <- DESeq(dds)
+  
+  # Dynamically find the correct coefficient for comparison
+  all_coefs <- resultsNames(dds)
+  target_coef <- paste0("group_", group1, "_vs_", group2)
+  
+  coef_name <- all_coefs[all_coefs == target_coef]
+  
+  if (length(coef_name) == 0) {
+    coef_name <- all_coefs[grepl(group1, all_coefs) & grepl(group2, all_coefs)]
+  }
+  
+  if (length(coef_name) == 0) {
+    stop(paste("Coefficient not found:", target_coef, "\nAvailable:", paste(all_coefs, collapse = ", ")))
+  }
+  
+  cat("Using coefficient:", coef_name, "\n")
+  
+  # apeglm shrinkage
+  res_shrink <- lfcShrink(dds, coef = coef_name, type = "apeglm")
+  
+  res_df <- as.data.frame(res_shrink)
+  res_df$gene <- rownames(res_df)
+  
+  keep_cols <- intersect(c("gene", "baseMean", "log2FoldChange", "lfcSE", 
+                           "pvalue", "padj"), colnames(res_df))
+  res_df <- res_df[, keep_cols]
+  colnames(res_df) <- c("gene", "baseMean", "log2FC", "lfcSE", "pvalue", "padj")
+  
+  return(res_df)
+}
+
+# ============ 5. Run DE analysis (apeglm shrinkage) ============
+
+# 5.1 Re48 vs N48
+deg_Re48_apeglm <- run_deseq2_apeglm(counts_matrix, col_data, "Re48", "N48")
+write.csv(deg_Re48_apeglm, "DESeq2_apeglm_Re48_vs_N48.csv", row.names = FALSE)
+
+# 5.2 NRe48 vs N48
+deg_NRe48_apeglm <- run_deseq2_apeglm(counts_matrix, col_data, "NRe48", "N48")
+write.csv(deg_NRe48_apeglm, "DESeq2_apeglm_NRe48_vs_N48.csv", row.names = FALSE)
