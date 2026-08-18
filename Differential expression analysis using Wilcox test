@@ -1,11 +1,8 @@
 library(Seurat)
 library(dplyr)
 
-# Set working directory
-setwd("H:/scRNA-seq/Hip-seq/")
-
 # 1. Read Seurat object
-matrix <- readRDS("seurat2/matrix.rds")
+matrix <- readRDS("matrix.rds")
 
 # 2. Keep only Hip-seq samples
 hip <- subset(matrix, Methods == "Hip-seq") 
@@ -35,13 +32,5 @@ for (name in names(comparisons)) {
   )
   
   deg <- deg %>% mutate(gene = rownames(deg))
-  write.csv(deg, file = paste0('seurat2/1/', name, "_all.csv"), row.names = FALSE)
-  
-  cat("Saved:", name, ".csv, with", nrow(deg), "genes\n", sep = "")
+  write.csv(deg, file = paste0(name, "_all.csv"), row.names = FALSE)
 }
-
-cat("\nAll DE analyses completed!\n")
-print(final_plot)
-
-ggsave("E:/USTC/小论文/异质性版本/图/PCA_pairs_1_to_24.png", 
-       final_plot, width = 8, height = 10, dpi = 600)
