@@ -1,0 +1,19 @@
+#!/bin/sh
+#an example for Intel MPI job.
+#DO NOT RUN THIS SCRIPT DIRECTLY,
+#PLEASE RUN THIS SCRIPT WITH qsub: qsub intelmpi_job.pbs
+#
+#PBS -N build_index
+#PBS -o build_index.log
+#PBS -e build_index.err
+#PBS -q batch
+#PBS -l nodes=1:ppn=10
+#PBS -l walltime=148:00:00
+
+module load STAR
+
+STAR --runThreadN 10  --runMode genomeGenerate \
+--genomeDir /path_to_reference/reference \
+--genomeFastaFiles /path_to_reference/reference/Danio_rerio.GRCz11.dna.primary_assembly.fa \
+--sjdbGTFfile /path_to_reference/reference/Danio_rerio.GRCz11.110.gtf \
+
