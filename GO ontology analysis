@@ -1,0 +1,71 @@
+library(clusterProfiler)
+library(org.Dr.eg.db)
+library(ggplot2)
+library(reshape2)
+
+# ============================================================
+# 1. GO enrichment analysis
+# ============================================================
+DEG_Re <- read.csv('DEG_Re_all.csv')%>%
+  mutate(change = as.factor(ifelse(p_val < 0.05 & abs(avg_log2FC) > 0.4,
+                                   ifelse(avg_log2FC > 0.4 ,'Up','Down'),'No change'))) %>%
+  filter(change != 'No change')
+DEG_NRe <- read.csv('DEG_NRe_all.csv')%>%
+  mutate(change = as.factor(ifelse(p_val < 0.05 & abs(avg_log2FC) > 0.4,
+                                   ifelse(avg_log2FC > 0.4,'Up','Down'),'No change'))) %>%
+  filter(change != 'No change')
+
+data <- rbind(DEG_Re,DEG_NRe)
+data$group <- c(rep('N48_vs._Re48',length(DEG_Re$X)),
+                rep('N48_vs._NRe48',length(DEG_NRe$X)))
+
+data2 <- data
+data2[data$X %in% data2[duplicated(data2$X),"X"],'group']='Both'
+data2 = data2[!duplicated(data2$X),]
+data2[data2$group=='N48_vs._Re48','group']='Only_Re48'
+data2[data2$group=='N48_vs._NRe48','group']='Only_NRe48'
+
+# Convert gene symbols to ENTREZ IDs
+ids <- bitr(data2$X, 'SYMBOL', 'ENTREZID', 'org.Dr.eg.db')
+sce.marker <- merge(data2, ids, by.x = 'X', by.y = 'SYMBOL')
+
+# Split genes by group
+gene <- split(sce.marker$ENTREZID, sce.marker$group)
+
+# CompareCluster GO enrichment
+multi_go <- compareCluster(
+  gene,
+  fun = "enrichGO",
+  OrgDb = 'org.Dr.eg.db',
+  pvalueCutoff = 0.1,
+  ont = 'BP'
+)
+
+# Simplify redundant GO terms
+multi_go <- simplify(multi_go, cutoff = 0.6)
+
+# Dotplot visualization
+dotplot(multi_go, showCategory = 10) +
+  theme(
+    axis.line.y = element_line(color = "black"),
+    axis.line.x = element_blank(),
+    legend.justification = c(1, 0),
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.2, 'cm'),
+    legend.title = element_text(size = 8, family = 'sans'),
+    axis.line = element_line(color = "black", size = 0, linetype = "solid")
+  ) +
+  theme(
+    text = element_text(size = 8, family = 'sans'),
+    axis.text.x = element_text(color = 'black', size = 7, angle = 45, vjust = 1, hjust = 1),
+    axis.text.y = element_text(size = 7, family = 'sans'),
+    axis.ticks = element_line(color = "black", linewidth = 0.25, linetype = "solid")
+  ) +
+  labs(x = NULL) +
+  scale_size(range = c(1, 3))
+
+# Save results
+write.csv(multi_go, 'mult_go.csv')
+ggsave('mult_go.png',
+       units = "cm", dpi = 600,
+       width = 9, height = 13, device = "png")
