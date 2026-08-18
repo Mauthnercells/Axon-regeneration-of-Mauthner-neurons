@@ -1,0 +1,47 @@
+library(Seurat)
+library(dplyr)
+
+# Set working directory
+setwd("H:/scRNA-seq/Hip-seq/")
+
+# 1. Read Seurat object
+matrix <- readRDS("seurat2/matrix.rds")
+
+# 2. Keep only Hip-seq samples
+hip <- subset(matrix, Methods == "Hip-seq") 
+Idents(hip) <- "group"
+
+# 3. Define comparisons: format c(treatment, control)
+comparisons <- list(
+  DEG_Re  = c("Re48", "N48"),  
+  DEG_NRe = c("NRe48", "N48")  
+)
+
+# 4. Run differential expression analysis
+for (name in names(comparisons)) {
+  ident.1 <- comparisons[[name]][1]
+  ident.2 <- comparisons[[name]][2]
+  
+  cat("Running DE analysis:", name, " (", ident.1, " vs ", ident.2, ")\n", sep = "")
+  
+  deg <- FindMarkers(
+    object = hip,
+    ident.1 = ident.1,
+    ident.2 = ident.2,
+    min.pct = 0,                   
+    logfc.threshold = 0,           
+    test.use = "wilcox",
+    verbose = FALSE
+  )
+  
+  deg <- deg %>% mutate(gene = rownames(deg))
+  write.csv(deg, file = paste0('seurat2/1/', name, "_all.csv"), row.names = FALSE)
+  
+  cat("Saved:", name, ".csv, with", nrow(deg), "genes\n", sep = "")
+}
+
+cat("\nAll DE analyses completed!\n")
+print(final_plot)
+
+ggsave("E:/USTC/小论文/异质性版本/图/PCA_pairs_1_to_24.png", 
+       final_plot, width = 8, height = 10, dpi = 600)
