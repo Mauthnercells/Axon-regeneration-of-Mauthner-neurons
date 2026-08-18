@@ -1,0 +1,21 @@
+#!/bin/sh
+##An example for serial job.
+##DO NOT RUN THIS SCRIPT DIRECTLY,
+##PLEASE RUN THIS SCRIPT WITH qsub: qsub serial_job.pbs
+##
+#PBS -N multiqc
+#PBS -o multiqc.log
+#PBS -e multiqc.err
+#PBS -q batch
+#PBS -l walltime=300:00:00
+#PBS -l nodes=1:ppn=4
+##
+cd /path_to_data/
+
+source activate
+conda deactivate
+conda activate Fastq
+
+
+multiqc /path_to_data/fastqc -o  /path_to_data/fastqc
+
