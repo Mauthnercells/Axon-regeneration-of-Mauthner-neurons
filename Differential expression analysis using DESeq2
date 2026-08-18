@@ -6,12 +6,10 @@ library(cowplot)
 library(ggrepel)
 
 # ============ 1. Read data ============
-setwd('H:/scRNA-seq/Hip-seq/')
-seurat_obj <- readRDS('seurat2/matrix.rds')
+seurat_obj <- readRDS('matrix.rds')
 
 # ============ 2. Subset cells ============
-seurat_sub <- seurat_obj[, seurat_obj$Methods == 'Hip-seq' & 
-                           seurat_obj$group %in% c('N48', 'NRe48', 'Re48')]
+seurat_sub <- seurat_obj[, seurat_obj$Methods == 'Hip-seq']
 
 # Set factor levels with N48 as reference
 seurat_sub$group <- factor(seurat_sub$group, levels = c('N48', 'NRe48', 'Re48'))
