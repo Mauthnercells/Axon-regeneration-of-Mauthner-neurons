@@ -1,0 +1,16 @@
+#!/bin/sh
+##An example for serial job.
+##DO NOT RUN THIS SCRIPT DIRECTLY,
+##PLEASE RUN THIS SCRIPT WITH qsub: qsub serial_job.pbs
+##
+#PBS -N fastqc
+#PBS -o fastqc_45.log
+#PBS -e fastqc_45.err
+#PBS -q fat
+#PBS -l walltime=300:00:00
+#PBS -l nodes=1:ppn=20
+##
+cd /path_to_data/data/
+module load fastqc
+
+fastqc -t 20 -o /path_to_data/fastqc /path_to_data/data/*fq.gz
