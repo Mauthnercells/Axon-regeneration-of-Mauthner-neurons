@@ -1,0 +1,24 @@
+#!/bin/sh
+#an example for Intel MPI job.
+#DO NOT RUN THIS SCRIPT DIRECTLY,
+#PLEASE RUN THIS SCRIPT WITH qsub: qsub intelmpi_job.pbs
+#
+#PBS -N featureCounts
+#PBS -o featureCounts.log
+#PBS -e featureCounts.err
+#PBS -q batch
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=148:00:00
+
+source activate
+conda deactivate
+conda activate Rseurat_new
+
+cd /way_to_output/bam/
+featureCounts \
+-t exon \
+-g gene_id \
+-a /path_to_reference/reference/Danio_rerio.GRCz11.110.gtf \
+-o /path_to_output/bam/counts.txt \
+-p \
+Injury_12hpi_1_clean.bamAligned.sortedByCoord.out.bam  Injury_12hpi_2_clean.bamAligned.sortedByCoord.out.bam  Injury_12hpi_3_clean.bamAligned.sortedByCoord.out.bam  Injury_12hpi_4_clean.bamAligned.sortedByCoord.out.bam  Injury_24hpi_1_clean.bamAligned.sortedByCoord.out.bam  Injury_24hpi_2_clean.bamAligned.sortedByCoord.out.bam  Injury_24hpi_3_clean.bamAligned.sortedByCoord.out.bam  Injury_24hpi_4_clean.bamAligned.sortedByCoord.out.bam  Injury_24hpi_5_clean.bamAligned.sortedByCoord.out.bam  Injury_2hpi_1_clean.bamAligned.sortedByCoord.out.bam  Injury_2hpi_2_clean.bamAligned.sortedByCoord.out.bam  Injury_2hpi_3_clean.bamAligned.sortedByCoord.out.bam  Injury_2hpi_4_clean.bamAligned.sortedByCoord.out.bam  Injury_2hpi_5_clean.bamAligned.sortedByCoord.out.bam  Injury_48hpi_1_clean.bamAligned.sortedByCoord.out.bam  Injury_48hpi_2_clean.bamAligned.sortedByCoord.out.bam  Injury_48hpi_3_clean.bamAligned.sortedByCoord.out.bam  Injury_48hpi_4_clean.bamAligned.sortedByCoord.out.bam  Injury_48hpi_5_clean.bamAligned.sortedByCoord.out.bam  Injury_6hpi_1_clean.bamAligned.sortedByCoord.out.bam  Injury_6hpi_2_clean.bamAligned.sortedByCoord.out.bam  Injury_6hpi_3_clean.bamAligned.sortedByCoord.out.bam  Injury_6hpi_4_clean.bamAligned.sortedByCoord.out.bam  Injury_6hpi_5_clean.bamAligned.sortedByCoord.out.bam  Injury_6hpi_6_clean.bamAligned.sortedByCoord.out.bam  Injury_72hpi_1_clean.bamAligned.sortedByCoord.out.bam  Injury_72hpi_2_clean.bamAligned.sortedByCoord.out.bam  Injury_72hpi_3_clean.bamAligned.sortedByCoord.out.bam  Injury_72hpi_4_clean.bamAligned.sortedByCoord.out.bam  Injury_96hpi_1_clean.bamAligned.sortedByCoord.out.bam  Injury_96hpi_2_clean.bamAligned.sortedByCoord.out.bam  Injury_96hpi_3_clean.bamAligned.sortedByCoord.out.bam  Normal_12hpi_1_clean.bamAligned.sortedByCoord.out.bam  Normal_12hpi_2_clean.bamAligned.sortedByCoord.out.bam  Normal_12hpi_3_clean.bamAligned.sortedByCoord.out.bam  Normal_12hpi_4_clean.bamAligned.sortedByCoord.out.bam  Normal_24hpi_1_clean.bamAligned.sortedByCoord.out.bam  Normal_24hpi_2_clean.bamAligned.sortedByCoord.out.bam  Normal_24hpi_3_clean.bamAligned.sortedByCoord.out.bam  Normal_24hpi_4_clean.bamAligned.sortedByCoord.out.bam  Normal_24hpi_5_clean.bamAligned.sortedByCoord.out.bam  Normal_2hpi_1_clean.bamAligned.sortedByCoord.out.bam  Normal_2hpi_2_clean.bamAligned.sortedByCoord.out.bam  Normal_2hpi_3_clean.bamAligned.sortedByCoord.out.bam  Normal_2hpi_4_clean.bamAligned.sortedByCoord.out.bam  Normal_2hpi_5_clean.bamAligned.sortedByCoord.out.bam  Normal_48hpi_1_clean.bamAligned.sortedByCoord.out.bam  Normal_48hpi_2_clean.bamAligned.sortedByCoord.out.bam  Normal_48hpi_3_clean.bamAligned.sortedByCoord.out.bam  Normal_48hpi_4_clean.bamAligned.sortedByCoord.out.bam  Normal_48hpi_5_clean.bamAligned.sortedByCoord.out.bam  Normal_6hpi_1_clean.bamAligned.sortedByCoord.out.bam  Normal_6hpi_2_clean.bamAligned.sortedByCoord.out.bam  Normal_6hpi_3_clean.bamAligned.sortedByCoord.out.bam  Normal_6hpi_4_clean.bamAligned.sortedByCoord.out.bam  Normal_6hpi_5_clean.bamAligned.sortedByCoord.out.bam  Normal_6hpi_6_clean.bamAligned.sortedByCoord.out.bam  Normal_72hpi_1_clean.bamAligned.sortedByCoord.out.bam  Normal_72hpi_2_clean.bamAligned.sortedByCoord.out.bam  Normal_72hpi_3_clean.bamAligned.sortedByCoord.out.bam  Normal_72hpi_4_clean.bamAligned.sortedByCoord.out.bam  Normal_96hpi_1_clean.bamAligned.sortedByCoord.out.bam  Normal_96hpi_2_clean.bamAligned.sortedByCoord.out.bam  Normal_96hpi_3_clean.bamAligned.sortedByCoord.out.bam
